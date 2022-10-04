@@ -22,9 +22,12 @@ def main():
     args = parser.parse_args()
 
     if args.filename:
-        GamesManager(input_type=FILENAME_INPUT_TYPE, filename=args.filename)
-    else:
-        GamesManager()
+        gmanager = GamesManager(input_type=FILENAME_INPUT_TYPE, filename=args.filename)
 
+    else:
+        gmanager = GamesManager()
+
+    gmanager.order_results()
+                
 if __name__ == "__main__":
     main()
