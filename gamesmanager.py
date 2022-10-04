@@ -1,10 +1,14 @@
 import re
 
+from operator import attrgetter, itemgetter
+
+
 from constants import (
     FILENAME_INPUT_TYPE,
     STDIN_INPUT_TYPE,
     GAME_DRAW,
-    GAME_WIN)
+    GAME_WIN, 
+    OUTPUT_FILENAME)
 
 class GamesManager():
     """
@@ -71,13 +75,35 @@ class GamesManager():
         Creates the object based on the input type
         """
         if input_type == cls.stdin_input_type:
-            games_results = int(input("Enter the number of games\n"))
-            while games_results > 0:
-                gr = input()
-                cls._parse_game_results(gr)
-                games_results -= 1
+                games_results = int(input("Enter the number of games\n"))
+                while games_results > 0:
+                    gr = input()
+                    cls._parse_game_results(gr)
+                    games_results -= 1
 
         elif input_type == cls.filename_input_type:
-            with open(filename, "r") as file:
-                for line in file.readlines():
-                    cls._parse_game_results(line)
+                with open(filename, "r") as file:
+                    for line in file.readlines():
+                        cls._parse_game_results(line)
+        
+        return super().__new__(cls)
+
+    def order_results(self):
+        """
+        Write the ordered scores in a .txt file
+        """
+        sorted_by_score = sorted(
+            sorted(self._teams.items(), 
+            key=itemgetter(0), 
+            reverse=True), 
+            key=itemgetter(1), 
+            reverse=False)
+
+        ordered_scores = reversed(sorted_by_score)
+
+        with open(OUTPUT_FILENAME, "w") as f:
+            for id, ord_score in enumerate(ordered_scores, 1):
+                team = ord_score[0]
+                current_score = ord_score[1]
+                points_text_format = "pts" if current_score > 2 or current_score == 0 else "pt"
+                f.write(f"{id}. {team}, {current_score} {points_text_format}\n")
