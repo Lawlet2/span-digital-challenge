@@ -63,36 +63,40 @@ class GamesManager():
         Parse the game results and calls _set_teams_points
         to create and update the _teams dict
         """
-        try:
-            first_team, first_team_score, sec_team, sec_team_score = re.findall(
-                r'([a-zA-Z\s]+|[0-9]+)', game.strip())
-
-            first_team_points, sec_team_points = cls._get_points(
-            first_team_score, sec_team_score)
-
-            cls._set_teams_points(first_team, first_team_points)
-            cls._set_teams_points(sec_team, sec_team_points)
         
-        except ValueError:
-            logging.error("Invalid input format, (sample format -> First Team 2, Second Team 5)")
+        first_team, first_team_score, sec_team, sec_team_score = re.findall(
+                r'([a-zA-Z\s]+|-?[0-9]+)', game.strip())
 
-            
+        if int(first_team_score)< 0 or int(sec_team_score) < 0:
+            raise ValueError
+
+        first_team_points, sec_team_points = cls._get_points(
+        first_team_score, sec_team_score)
+
+        cls._set_teams_points(first_team, first_team_points)
+        cls._set_teams_points(sec_team, sec_team_points)
+
+
     def __new__(cls, input_type: str = stdin_input_type, filename: str = "") -> 'GamesManager':
         """
         Creates the object based on the input type
         """
-        if input_type == cls.stdin_input_type:
-                games_results = int(input("Enter the number of games\n"))
-                while games_results > 0:
-                    gr = input()
-                    cls._parse_game_results(gr)
-                    games_results -= 1
+        try:
+            if input_type == cls.stdin_input_type:
+                    games_results = int(input("Enter the number of games\n"))
+                    while games_results > 0:
+                        gr = input()
+                        cls._parse_game_results(gr)
+                        games_results -= 1
 
-        elif input_type == cls.filename_input_type:
-                with open(filename, "r") as file:
-                    for line in file.readlines():
-                        cls._parse_game_results(line)
-
+            elif input_type == cls.filename_input_type:
+                    with open(filename, "r") as file:
+                        for line in file.readlines():
+                            cls._parse_game_results(line)
+                            
+        except ValueError:
+            logging.error("Invalid input format, (sample format -> First Team 2, Second Team 5)")             
+            
         return super().__new__(cls)
 
 
