@@ -1,14 +1,14 @@
 import re
 
-from operator import attrgetter, itemgetter
-
-
+from operator import itemgetter
+ 
 from constants import (
     FILENAME_INPUT_TYPE,
     STDIN_INPUT_TYPE,
     GAME_DRAW,
     GAME_WIN, 
     OUTPUT_FILENAME)
+
 
 class GamesManager():
     """
@@ -70,7 +70,7 @@ class GamesManager():
         cls._set_teams_points(sec_team, sec_team_points)
 
 
-    def __new__(cls, input_type: str = stdin_input_type, filename: str = ""):
+    def __new__(cls, input_type: str = stdin_input_type, filename: str = "") -> 'GamesManager':
         """
         Creates the object based on the input type
         """
@@ -85,12 +85,52 @@ class GamesManager():
                 with open(filename, "r") as file:
                     for line in file.readlines():
                         cls._parse_game_results(line)
-        
+
         return super().__new__(cls)
 
-    def order_results(self):
+
+    def get_result_ids(self, ordered_scores: list) -> dict:
         """
-        Write the ordered scores in a .txt file
+        Returns a dict that contains the score and its 
+        calculated list of ids
+        """
+        aux_id = 0
+        points = {}
+
+        for id, od in enumerate(ordered_scores, start=1):
+            current_score = od[1]
+            draws = points.get(current_score, [])
+
+            if draws:
+                if len(draws) == 1:
+                    draws[0] = aux_id
+                draws.append(aux_id)
+            else:
+                aux_id += 1
+                points[current_score] = [id]
+
+        return points
+
+
+    def generate_results_file(self, ordered_scores: list) -> None:
+        """
+        Generates the .txt file that contains the results
+        """
+        result_ids = self.get_result_ids(ordered_scores)
+
+        with open(OUTPUT_FILENAME, "w") as result_file:
+            for ord_score in ordered_scores:
+               team = ord_score[0]
+               current_score = ord_score[1]
+               points_text_format = "pts" if current_score > 2 or current_score == 0 else "pt"
+               line_text_format = f"""{result_ids.get(current_score)[0]}. {team}, {current_score} {points_text_format}\n"""
+               result_file.writelines(line_text_format)
+
+
+    def get_results(self) -> None:
+        """
+        Main method to order the game results and
+        generate the results file
         """
         sorted_by_score = sorted(
             sorted(self._teams.items(), 
@@ -98,12 +138,5 @@ class GamesManager():
             reverse=True), 
             key=itemgetter(1), 
             reverse=False)
-
-        ordered_scores = reversed(sorted_by_score)
-
-        with open(OUTPUT_FILENAME, "w") as f:
-            for id, ord_score in enumerate(ordered_scores, 1):
-                team = ord_score[0]
-                current_score = ord_score[1]
-                points_text_format = "pts" if current_score > 2 or current_score == 0 else "pt"
-                f.write(f"{id}. {team}, {current_score} {points_text_format}\n")
+        ordered_scores = list(reversed(sorted_by_score))
+        self.generate_results_file(ordered_scores)

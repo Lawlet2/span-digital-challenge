@@ -27,7 +27,7 @@ def main():
     else:
         gmanager = GamesManager()
 
-    gmanager.order_results()
+    gmanager.get_results()
                 
 if __name__ == "__main__":
     main()
