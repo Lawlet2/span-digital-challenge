@@ -93,7 +93,7 @@ class GamesManager():
                     with open(filename, "r") as file:
                         for line in file.readlines():
                             cls._parse_game_results(line)
-                            
+
         except ValueError:
             logging.error("Invalid input format, (sample format -> First Team 2, Second Team 5)")             
             
@@ -136,6 +136,12 @@ class GamesManager():
                points_text_format = "pts" if current_score > 2 or current_score == 0 else "pt"
                line_text_format = f"""{result_ids.get(current_score)[0]}. {team}, {current_score} {points_text_format}\n"""
                result_file.writelines(line_text_format)
+               
+        print("*" * 50)
+        print("SPAN CODE CHALLENGE")
+        print(f"\nOutput file: {OUTPUT_FILENAME}\n")
+        print(f"Tip to print the output file: cat {OUTPUT_FILENAME}\n")
+        print("*" * 50)
 
 
     def get_results(self) -> None:
