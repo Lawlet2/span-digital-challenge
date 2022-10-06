@@ -1,4 +1,5 @@
 import re
+import logging 
 
 from operator import itemgetter
  
@@ -62,14 +63,20 @@ class GamesManager():
         Parse the game results and calls _set_teams_points
         to create and update the _teams dict
         """
-        first_team, first_team_score, sec_team, sec_team_score = re.findall(
-            r'([a-zA-Z\s]+|[0-9]+)', game.strip())
-        first_team_points, sec_team_points = cls._get_points(
+        try:
+            first_team, first_team_score, sec_team, sec_team_score = re.findall(
+                r'([a-zA-Z\s]+|[0-9]+)', game.strip())
+
+            first_team_points, sec_team_points = cls._get_points(
             first_team_score, sec_team_score)
-        cls._set_teams_points(first_team, first_team_points)
-        cls._set_teams_points(sec_team, sec_team_points)
 
+            cls._set_teams_points(first_team, first_team_points)
+            cls._set_teams_points(sec_team, sec_team_points)
+        
+        except ValueError:
+            logging.error("Invalid input format, (sample format -> First Team 2, Second Team 5)")
 
+            
     def __new__(cls, input_type: str = stdin_input_type, filename: str = "") -> 'GamesManager':
         """
         Creates the object based on the input type
