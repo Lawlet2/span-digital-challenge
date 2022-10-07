@@ -25,6 +25,18 @@ We want you to create a production ready, maintainable, testable command-line ap
 
 #### Test the code challenge online here: https://span.eduardo-ac.com
 
+##### If cursor is not showing/blinking, type enter to start 
+
+Run the project with: 
+
+```
+python main.py
+```
+or with:
+
+```
+ python main.py --file="games.txt"
+```
 ## Tech Stack
 
 #### Programming language
