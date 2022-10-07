@@ -3,8 +3,6 @@
 </p>
 
 
-
-
 # CODE CHALLENGE
 
 Span code challenge 
@@ -21,9 +19,13 @@ We want you to create a production ready, maintainable, testable command-line ap
 
 ### [Read more here](/docs/challenge/instructions.pdf) 
 
-## Demo
+## Demo 
 
 #### Test the code challenge online here: https://span.eduardo-ac.com
+
+<p align="center">
+  <img src="/docs/images/demo.png">
+</p>
 
 ##### If cursor is not showing/blinking, type enter to start 
 
@@ -37,6 +39,7 @@ or with:
 ```
  python main.py --file="games.txt"
 ```
+
 ## Tech Stack
 
 #### Programming language
